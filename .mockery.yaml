@@ -1,0 +1,24 @@
+dir: "{{.InterfaceDir}}/mocks"
+outpkg: "mocks"
+packages:
+  personalNotificationService/factory:
+    config:
+      all:
+  personalNotificationService/factory/metadata:
+    config:
+      all:
+  personalNotificationService/factory/content:
+    config:
+      all:
+  personalNotificationService/factory/sender:
+    config:
+      all:
+  personalNotificationService/common:
+    config:
+      all:
+  personalNotificationService/repositories:
+    config:
+      all:
+  personalNotificationService/kafka:
+    config:
+      all:

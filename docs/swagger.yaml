@@ -1,0 +1,254 @@
+definitions:
+  api.ChannelToTemplate:
+    properties:
+      channel:
+        type: string
+      templateID:
+        type: string
+    type: object
+  api.CreateTemplateRequest:
+    properties:
+      channel:
+        type: string
+      template:
+        type: string
+    type: object
+  api.NotificationRequest:
+    properties:
+      channelToTemplateID:
+        items:
+          $ref: '#/definitions/api.ChannelToTemplate'
+        type: array
+      priority:
+        type: string
+      type:
+        type: string
+    type: object
+  api.NotificationResponse:
+    properties:
+      channelToTemplateID:
+        items:
+          $ref: '#/definitions/api.ChannelToTemplate'
+        type: array
+      id:
+        type: string
+      priority:
+        type: string
+      type:
+        type: string
+    type: object
+  api.SendNotificationRequest:
+    properties:
+      notificationID:
+        type: string
+      username:
+        type: string
+    type: object
+  api.TemplateResponse:
+    properties:
+      channel:
+        type: string
+      id:
+        type: string
+      template:
+        type: string
+    type: object
+  api.UserNotificationChannelsRequest:
+    properties:
+      channels:
+        items:
+          type: string
+        type: array
+      notificationID:
+        type: string
+      username:
+        type: string
+    type: object
+  api.UserNotificationChannelsResponse:
+    properties:
+      channels:
+        items:
+          type: string
+        type: array
+      notificationID:
+        type: string
+      username:
+        type: string
+    type: object
+  auth.AuthenticateRequest:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  auth.AuthenticateResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  common.ErrorResponse:
+    properties:
+      code:
+        type: integer
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /api/v1/authenticate:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates the user and returns a JWT token if the credentials
+        are valid
+      parameters:
+      - description: User credentials
+        in: body
+        name: AuthenticateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/auth.AuthenticateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.AuthenticateResponse'
+        "400":
+          description: Invalid Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "401":
+          description: Unauthorized or User not found
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: Authenticate user
+      tags:
+      - Authentication
+  /api/v1/notifications:
+    post:
+      consumes:
+      - application/json
+      description: Creates a notification and maps it to channels and templates
+      parameters:
+      - description: Notification details
+        in: body
+        name: NotificationRequest
+        required: true
+        schema:
+          $ref: '#/definitions/api.NotificationRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.NotificationResponse'
+        "400":
+          description: Invalid Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: Create a notification
+      tags:
+      - Notifications
+  /api/v1/notifications/send:
+    post:
+      consumes:
+      - application/json
+      description: Sends a notification to a user based on the notification ID and
+        username
+      parameters:
+      - description: Notification details
+        in: body
+        name: SendNotificationRequest
+        required: true
+        schema:
+          $ref: '#/definitions/api.SendNotificationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: Invalid Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: Send a notification to a user
+      tags:
+      - Notifications
+  /api/v1/templates:
+    post:
+      consumes:
+      - application/json
+      description: Creates a template for a specific notification channel
+      parameters:
+      - description: Template details
+        in: body
+        name: CreateTemplateRequest
+        required: true
+        schema:
+          $ref: '#/definitions/api.CreateTemplateRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.TemplateResponse'
+        "400":
+          description: Invalid Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: Create a notification template
+      tags:
+      - Templates
+  /api/v1/user-notification-channels:
+    post:
+      consumes:
+      - application/json
+      description: Configures notification channels for a user
+      parameters:
+      - description: User notification channel details
+        in: body
+        name: UserNotificationChannelsRequest
+        required: true
+        schema:
+          $ref: '#/definitions/api.UserNotificationChannelsRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/api.UserNotificationChannelsResponse'
+        "400":
+          description: Invalid Request
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.ErrorResponse'
+      summary: Configure user notification channels
+      tags:
+      - Notifications
+swagger: "2.0"
